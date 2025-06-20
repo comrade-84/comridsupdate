@@ -18,7 +18,7 @@
       body {
         background: linear-gradient(135deg, #1e3c72, #2a5298);
         color: #fff;
-        font-family: Arial, sans-serif;
+        font-family: "Arial", sans-serif;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
@@ -55,9 +55,11 @@
         backdrop-filter: blur(10px);
         color: #fff;
         transition: transform 0.3s;
+        border-radius: 10px;
       }
       .card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       }
       .btn-primary {
         background-color: #e50914;
@@ -81,19 +83,20 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        background: url("https://images.unsplash.com/photo-1620641788421-7a1c342ea42e")
-          no-repeat center/cover;
+        background: url("https://images.unsplash.com/photo-1620641788421-7a1c342ea42e") no-repeat center/cover;
+        border-radius: 0 0 10px 10px;
       }
       .hero-section h1 {
-        font-size: 3rem;
-        font-weight: bold;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        font-size: 3.5rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
       }
       .form-container {
         background: rgba(255, 255, 255, 0.2);
-        padding: 2rem;
-        border-radius: 10px;
-        backdrop-filter: blur(10px);
+        padding: 2.5rem;
+        border-radius: 15px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       }
       .floating {
         animation: float 3s ease-in-out infinite;
@@ -112,6 +115,7 @@
         color: #fff;
         backdrop-filter: blur(10px);
         border: none;
+        border-radius: 10px;
       }
       .modal-header {
         border-bottom: none;
@@ -131,6 +135,7 @@
         background: #1e3c72;
         padding: 1.5rem 0;
         flex-shrink: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
       }
       footer .cu-logo::before {
         content: "CU";
@@ -149,8 +154,9 @@
         text-decoration: underline;
       }
       .search-container {
-        max-width: 500px;
+        max-width: 600px;
         margin: 0 auto 2rem;
+        position: relative;
       }
       .avatar {
         width: 30px;
@@ -164,9 +170,40 @@
         border-radius: 50%;
         margin-left: 1rem;
       }
-      .category-badge {
+      .category-badge,
+      .timestamp-badge {
         font-size: 0.8rem;
         padding: 0.3rem 0.6rem;
+        margin-left: 0.5rem;
+      }
+      .post-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .chat-message {
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 5px;
+      }
+      .chat-section {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+      }
+      #chat-messages {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+      }
+      .notification-item {
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 5px;
       }
     </style>
   </head>
@@ -188,6 +225,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="showChat()">Chat</a>
+            </li>
+            <li class="nav-item position-relative">
+              <a class="nav-link" href="#" onclick="showNotifications()">
+                <i class="bi bi-bell"></i>
+                <span id="notification-badge" class="badge bg-danger rounded-circle d-none" style="position: absolute; top: -5px; right: -10px;">0</span>
+              </a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="#" onclick="logout()">Logout</a>
             </li>
@@ -256,6 +302,7 @@
                 <li><strong>Explore Updates:</strong> Browse posts categorized as Crypto, Tasks, Surveys, and more, curated by our admin team.</li>
                 <li><strong>Engage:</strong> Like, comment, and share posts to connect with the community and stay updated on trending opportunities.</li>
                 <li><strong>Contribute (Admins):</strong> If you're an admin, post new updates to keep the community informed about the latest Web3 developments.</li>
+                <li><strong>Chat Room:</strong> Join the community chat to discuss updates and connect with other users.</li>
               </ul>
               <h6>Why Use ComradeUpdates?</h6>
               <ul>
@@ -305,9 +352,7 @@
                     />
                   </div>
                   <div class="mb-3">
-                    <label for="signup-password" class="form-label"
-                      >Password</label
-                    >
+                    <label for="signup-password" class="form-label">Password</label>
                     <input
                       type="password"
                       class="form-control"
@@ -317,9 +362,7 @@
                     />
                   </div>
                   <div class="mb-3">
-                    <label for="confirm-password" class="form-label"
-                      >Confirm Password</label
-                    >
+                    <label for="confirm-password" class="form-label">Confirm Password</label>
                     <input
                       type="password"
                       class="form-control"
@@ -341,9 +384,7 @@
                     />
                   </div>
                   <div class="mb-3">
-                    <label for="login-password" class="form-label"
-                      >Password</label
-                    >
+                    <label for="login-password" class="form-label">Password</label>
                     <input
                       type="password"
                       class="form-control"
@@ -366,9 +407,7 @@
                   Sign Up
                 </button>
                 <p class="text-center mt-3">
-                  <a href="#" onclick="toggleAuthMode()"
-                    >Switch to <span id="auth-switch">Login</span></a
-                  >
+                  <a href="#" onclick="toggleAuthMode()">Switch to <span id="auth-switch">Login</span></a>
                 </p>
               </form>
             </div>
@@ -424,6 +463,7 @@
               class="form-control"
               id="admin-search"
               placeholder="Search posts by title, description, or category"
+              style="border-radius: 20px;"
             />
             <button class="btn btn-outline-light" onclick="clearSearch('admin')">
               <i class="bi bi-x"></i>
@@ -514,6 +554,7 @@
               class="form-control"
               id="user-search"
               placeholder="Search posts by title, description, or category"
+              style="border-radius: 20px;"
             />
             <button class="btn btn-outline-light" onclick="clearSearch('user')">
               <i class="bi bi-x"></i>
@@ -521,6 +562,36 @@
           </div>
         </div>
         <div id="user-posts" class="row"></div>
+      </div>
+
+      <!-- Chat Section -->
+      <div id="chat-section" class="chat-section d-none">
+        <h2 class="text-center mb-4">Community Chat</h2>
+        <div id="chat-messages" class="mb-3"></div>
+        <form id="chat-form">
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              id="chat-input"
+              placeholder="Type a message..."
+              required
+            />
+            <button type="submit" class="btn btn-primary">
+              <span
+                class="spinner-border spinner-border-sm d-none"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Send
+            </button>
+          </div>
+          <div class="mt-2 text-center">
+            <button type="button" class="btn btn-outline-light btn-sm" onclick="addEmoji('😊')">😊</button>
+            <button type="button" class="btn btn-outline-light btn-sm" onclick="addEmoji('👍')">👍</button>
+            <button type="button" class="btn btn-outline-light btn-sm" onclick="addEmoji('🎉')">🎉</button>
+          </div>
+        </form>
       </div>
 
       <!-- Comment Modal -->
@@ -569,6 +640,124 @@
         </div>
       </div>
 
+      <!-- Update Post Modal -->
+      <div
+        class="modal fade"
+        id="updatePostModal"
+        tabindex="-1"
+        aria-labelledby="updatePostModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="updatePostModalLabel">Update Post</h5>
+              <button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form id="update-post-form">
+                <div class="mb-3">
+                  <label for="update-post-title" class="form-label">Title</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="update-post-title"
+                    name="title"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="update-post-desc" class="form-label">Description</label>
+                  <textarea
+                    class="form-control"
+                    id="update-post-desc"
+                    name="description"
+                    rows="4"
+                    required
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="update-post-link" class="form-label">Link</label>
+                  <input
+                    type="url"
+                    class="form-control"
+                    id="update-post-link"
+                    name="link"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="update-post-image" class="form-label">Image URL</label>
+                  <input
+                    type="url"
+                    class="form-control"
+                    id="update-post-image"
+                    name="image"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="update-post-category" class="form-label">Category</label>
+                  <select
+                    class="form-control"
+                    id="update-post-category"
+                    name="category"
+                    required
+                  >
+                    <option value="" disabled>Select a category</option>
+                    <option value="Crypto">Crypto</option>
+                    <option value="Task">Task</option>
+                    <option value="Survey">Survey</option>
+                    <option value="NFT">NFT</option>
+                    <option value="DeFi">DeFi</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  <span
+                    class="spinner-border spinner-border-sm d-none"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Save Changes
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Modal -->
+      <div
+        class="modal fade"
+        id="notificationModal"
+        tabindex="-1"
+        aria-labelledby="notificationModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+              <button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div id="notification-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Toast Container -->
       <div class="toast-container">
         <div
@@ -606,461 +795,6 @@
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      // MockAPI endpoints
-      const API_USERS = "https://6852ac200594059b23ce9d1f.mockapi.io/users";
-      const API_POSTS = "https://6852ac200594059b23ce9d1f.mockapi.io/posts";
-      const WHATSAPP_LINK = "https://wa.me/2348124080834"; // Replace with your WhatsApp link
-
-      let currentUser = null;
-      let isLoginMode = false;
-      let currentPostId = null;
-      let allPosts = [];
-      let captchaData = {};
-      let signupEmail = "";
-      const commentModal = new bootstrap.Modal(
-        document.getElementById("commentModal")
-      );
-      const toastElement = document.getElementById("appToast");
-      const toast = new bootstrap.Toast(toastElement);
-
-      // Show toast notification
-      function showToast(message) {
-        document.getElementById("toast-message").textContent = message;
-        toast.show();
-      }
-
-      // Toggle button loading state
-      function toggleButtonLoading(button, isLoading) {
-        const spinner = button.querySelector(".spinner-border");
-        if (isLoading) {
-          button.disabled = true;
-          spinner.classList.remove("d-none");
-        } else {
-          button.disabled = false;
-          spinner.classList.add("d-none");
-        }
-      }
-
-      // Generate CAPTCHA
-      function generateCaptcha() {
-        const a = Math.floor(Math.random() * 10) + 1;
-        const b = Math.floor(Math.random() * 10) + 1;
-        captchaData = { question: `${a} + ${b}`, answer: a + b };
-        document.getElementById("captcha-question").textContent =
-          captchaData.question;
-      }
-
-      // Show auth section
-      function showAuth() {
-        document.getElementById("landing-page").classList.add("d-none");
-        document.getElementById("auth-section").classList.remove("d-none");
-        document.getElementById("navbar").classList.add("d-none");
-      }
-
-      // Toggle between signup and login
-      function toggleAuthMode(isCaptchaSuccess = false) {
-        isLoginMode = !isLoginMode || isCaptchaSuccess;
-        document.getElementById("auth-title").textContent = isLoginMode
-          ? "Login"
-          : "Sign Up";
-        document.getElementById("auth-btn").innerHTML = isLoginMode
-          ? '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Login'
-          : '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Sign Up';
-        document.getElementById("auth-switch").textContent = isLoginMode
-          ? "Sign Up"
-          : "Login";
-        document.getElementById("signup-fields").classList.toggle("d-none", isLoginMode);
-        document.getElementById("login-fields").classList.toggle("d-none", !isLoginMode);
-        // Disable hidden inputs to prevent validation errors
-        document.getElementById("signup-email").disabled = isLoginMode;
-        document.getElementById("signup-password").disabled = isLoginMode;
-        document.getElementById("confirm-password").disabled = isLoginMode;
-        document.getElementById("name").disabled = isLoginMode;
-        document.getElementById("login-email").disabled = !isLoginMode;
-        document.getElementById("login-password").disabled = !isLoginMode;
-        if (isCaptchaSuccess) {
-          document.getElementById("login-email").value = signupEmail;
-        }
-      }
-
-      // Handle auth form submission
-      document
-        .getElementById("auth-form")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const button = document.getElementById("auth-btn");
-          toggleButtonLoading(button, true);
-          let email, password;
-          if (isLoginMode) {
-            email = document.getElementById("login-email").value;
-            password = document.getElementById("login-password").value;
-          } else {
-            email = document.getElementById("signup-email").value;
-            password = document.getElementById("signup-password").value;
-          }
-
-          try {
-            if (isLoginMode) {
-              // Login: Fetch all users and filter client-side
-              const response = await fetch(API_USERS);
-              const users = await response.json();
-              const user = users.find(
-                (u) => u.email === email && u.password === password
-              );
-              if (user) {
-                currentUser = user;
-                showDashboard();
-                showToast(`Welcome back, ${user.name}!`);
-                document.getElementById("user-avatar").src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                  user.name
-                )}&background=random`;
-                document.getElementById("user-avatar").classList.remove("d-none");
-              } else {
-                alert("Invalid email or password");
-              }
-            } else {
-              // Signup
-              const name = document.getElementById("name").value;
-              const confirmPassword =
-                document.getElementById("confirm-password").value;
-              if (password !== confirmPassword) {
-                alert("Passwords do not match");
-                toggleButtonLoading(button, false);
-                return;
-              }
-              const role =
-                email === "ridwansaliu84@gmail.com" ? "admin" : "user";
-              const response = await fetch(API_USERS, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password, role, name }),
-              });
-              if (response.ok) {
-                signupEmail = email;
-                document.getElementById("auth-form").reset();
-                document.getElementById("auth-section").classList.add("d-none");
-                document
-                  .getElementById("captcha-section")
-                  .classList.remove("d-none");
-                generateCaptcha();
-              } else {
-                alert("Signup failed");
-              }
-            }
-          } catch (error) {
-            alert("An error occurred. Please try again.");
-          } finally {
-            toggleButtonLoading(button, false);
-          }
-        });
-
-      // Handle CAPTCHA submission
-      document
-        .getElementById("captcha-form")
-        .addEventListener("submit", (e) => {
-          e.preventDefault();
-          const button = document.getElementById("captcha-btn");
-          toggleButtonLoading(button, true);
-          const answer = parseInt(
-            document.getElementById("captcha-answer").value
-          );
-          if (answer === captchaData.answer) {
-            document.getElementById("captcha-section").classList.add("d-none");
-            document.getElementById("auth-section").classList.remove("d-none");
-            toggleAuthMode(true);
-          } else {
-            alert("Incorrect answer. Try again.");
-            generateCaptcha();
-            document.getElementById("captcha-form").reset();
-          }
-          toggleButtonLoading(button, false);
-        });
-
-      // Show appropriate dashboard
-      function showDashboard() {
-        document.getElementById("auth-section").classList.add("d-none");
-        document.getElementById("navbar").classList.remove("d-none");
-        if (currentUser.role === "admin") {
-          document.getElementById("admin-dashboard").classList.remove("d-none");
-          loadPosts("admin");
-        } else {
-          document.getElementById("user-dashboard").classList.remove("d-none");
-          loadPosts("user");
-        }
-      }
-
-      // Handle post submission
-      document
-        .getElementById("post-form")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const button = e.target.querySelector("button");
-          toggleButtonLoading(button, true);
-          const post = {
-            title: document.getElementById("post-title").value,
-            description: document.getElementById("post-desc").value,
-            link: document.getElementById("post-link").value,
-            image: document.getElementById("post-image").value,
-            category: document.getElementById("post-category").value,
-            likes: 0,
-            comments: [],
-          };
-          try {
-            const response = await fetch(API_POSTS, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(post),
-            });
-            if (response.ok) {
-              document.getElementById("post-form").reset();
-              loadPosts("admin");
-              showToast("Update posted successfully!");
-            } else {
-              alert("Failed to post update");
-            }
-          } catch (error) {
-            alert("An error occurred. Please try again.");
-          } finally {
-            toggleButtonLoading(button, false);
-          }
-        });
-
-      // Load posts for admin or user
-      async function loadPosts(type) {
-        try {
-          const response = await fetch(API_POSTS);
-          allPosts = await response.json();
-          renderPosts(type, allPosts);
-        } catch (error) {
-          alert("Failed to load posts");
-        }
-      }
-
-      // Render posts with optional filtering
-      function renderPosts(type, posts) {
-        const container = document.getElementById(`${type}-posts`);
-        container.innerHTML = "";
-        if (posts.length === 0) {
-          container.innerHTML = '<p class="text-center">No results found.</p>';
-          return;
-        }
-        posts.forEach((post) => {
-          const card = `
-            <div class="col-md-4 mb-4">
-              <div class="card">
-                <img src="${post.image}" class="card-img-top" alt="Web3 Update" style="height: 200px; object-fit: cover;">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="card-title mb-0">${post.title}</h5>
-                    <span class="badge bg-primary category-badge">${post.category || 'Other'}</span>
-                  </div>
-                  <p class="card-text">${post.description}</p>
-                  <div class="d-flex gap-2 mb-2">
-                    <a href="${post.link}" target="_blank" class="btn btn-primary btn-sm flex-fill">Visit Link</a>
-                    <a href="${WHATSAPP_LINK}" target="_blank" class="btn btn-outline-light btn-sm flex-fill">Message Admin</a>
-                  </div>
-                  ${
-                    type === "user"
-                      ? `
-                    <div class="d-flex justify-content-between align-items-center">
-                      <button class="btn btn-outline-light btn-sm" onclick="likePost('${
-                        post.id
-                      }', this)">
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                        <i class="bi bi-heart-fill"></i> ${post.likes}
-                      </button>
-                      <button class="btn btn-outline-light btn-sm" onclick="showComments('${
-                        post.id
-                      }')">
-                        <i class="bi bi-chat"></i> ${post.comments.length}
-                      </button>
-                      <button class="btn btn-outline-light btn-sm" onclick="sharePost('${
-                        post.id
-                      }', this)">
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                        <i class="bi bi-share"></i>
-                      </button>
-                    </div>
-                  `
-                      : ""
-                  }
-                </div>
-              </div>
-            </div>
-          `;
-          container.innerHTML += card;
-        });
-      }
-
-      // Search posts
-      function searchPosts(type) {
-        const searchInput = document
-          .getElementById(`${type}-search`)
-          .value.toLowerCase();
-        const filteredPosts = allPosts.filter(
-          (post) =>
-            post.title.toLowerCase().includes(searchInput) ||
-            post.description.toLowerCase().includes(searchInput) ||
-            (post.category || "").toLowerCase().includes(searchInput)
-        );
-        renderPosts(type, filteredPosts);
-      }
-
-      // Clear search
-      function clearSearch(type) {
-        document.getElementById(`${type}-search`).value = "";
-        renderPosts(type, allPosts);
-      }
-
-      // Add search event listeners
-      document
-        .getElementById("admin-search")
-        ?.addEventListener("input", () => searchPosts("admin"));
-      document
-        .getElementById("user-search")
-        ?.addEventListener("input", () => searchPosts("user"));
-
-      // Like post
-      async function likePost(postId, button) {
-        toggleButtonLoading(button, true);
-        try {
-          const response = await fetch(`${API_POSTS}/${postId}`);
-          const post = await response.json();
-          post.likes += 1;
-          const updateResponse = await fetch(`${API_POSTS}/${postId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(post),
-          });
-          if (updateResponse.ok) {
-            loadPosts(currentUser.role);
-            showToast("Post liked!");
-          } else {
-            alert("Failed to like post");
-          }
-        } catch (error) {
-          alert("An error occurred. Please try again.");
-        } finally {
-          toggleButtonLoading(button, false);
-        }
-      }
-
-      // Fetch user by email
-      async function getUserByEmail(email) {
-        try {
-          const response = await fetch(API_USERS);
-          const users = await response.json();
-          return users.find((u) => u.email === email) || { name: "Unknown User" };
-        } catch (error) {
-          return { name: "Unknown User" };
-        }
-      }
-
-      // Show comments in modal
-      async function showComments(postId) {
-        currentPostId = postId;
-        try {
-          const response = await fetch(`${API_POSTS}/${postId}`);
-          const post = await response.json();
-          const commentsContainer = document.getElementById("modal-comments");
-          commentsContainer.innerHTML = "";
-          if (post.comments.length === 0) {
-            commentsContainer.innerHTML =
-              '<p class="mb-0"><small>No comments yet.</small></p>';
-          } else {
-            for (const comment of post.comments) {
-              const user = await getUserByEmail(comment.email);
-              commentsContainer.innerHTML += `
-                <div class="d-flex align-items-start mb-2">
-                  <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(
-                    user.name
-                  )}&background=random" class="avatar" alt="${user.name}">
-                  <div>
-                    <strong>${user.name}</strong>
-                    <p class="mb-0"><small>${comment.text}</small></p>
-                  </div>
-                </div>
-                <hr class="my-2">
-              `;
-            }
-          }
-          commentModal.show();
-        } catch (error) {
-          alert("Failed to load comments");
-        }
-      }
-
-      // Add comment
-      document
-        .getElementById("comment-form")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const button = e.target.querySelector("button");
-          toggleButtonLoading(button, true);
-          const commentText = document.getElementById("comment-input").value;
-          try {
-            const response = await fetch(`${API_POSTS}/${currentPostId}`);
-            const post = await response.json();
-            post.comments.push({ email: currentUser.email, text: commentText });
-            const updateResponse = await fetch(`${API_POSTS}/${currentPostId}`, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(post),
-            });
-            if (updateResponse.ok) {
-              document.getElementById("comment-form").reset();
-              showComments(currentPostId);
-              loadPosts(currentUser.role);
-              showToast("Comment added!");
-            } else {
-              alert("Failed to add comment");
-            }
-          } catch (error) {
-            alert("An error occurred. Please try again.");
-          } finally {
-            toggleButtonLoading(button, false);
-          }
-        });
-
-      // Share post
-      async function sharePost(postId, button) {
-        toggleButtonLoading(button, true);
-        try {
-          const response = await fetch(`${API_POSTS}/${postId}`);
-          const post = await response.json();
-          const shareUrl = `${window.location.origin}/post/${postId}`;
-          const shareText = `Check out this Web3 update: ${post.title} on ComradeUpdates! ${shareUrl}`;
-          if (navigator.share && navigator.canShare({ url: shareUrl })) {
-            await navigator.share({
-              title: post.title,
-              text: post.description,
-              url: shareUrl,
-            });
-            showToast("Post shared successfully!");
-          } else {
-            await navigator.clipboard.writeText(shareText);
-            showToast("Link copied to clipboard!");
-          }
-        } catch (error) {
-          alert("Failed to share post");
-        } finally {
-          toggleButtonLoading(button, false);
-        }
-      }
-
-      // Logout
-      function logout() {
-        currentUser = null;
-        document.getElementById("admin-dashboard").classList.add("d-none");
-        document.getElementById("user-dashboard").classList.add("d-none");
-        document.getElementById("auth-section").classList.add("d-none");
-        document.getElementById("captcha-section").classList.add("d-none");
-        document.getElementById("landing-page").classList.remove("d-none");
-        document.getElementById("navbar").classList.add("d-none");
-        document.getElementById("user-avatar").classList.add("d-none");
-        showToast("Logged out successfully!");
-      }
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
