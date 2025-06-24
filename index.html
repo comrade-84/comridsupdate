@@ -83,7 +83,8 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        background: url("https://images.unsplash.com/photo-1620641788421-7a1c342ea42e") no-repeat center/cover;
+        background: url("https://images.unsplash.com/photo-1620641788421-7a1c342ea42e")
+          no-repeat center/cover;
         border-radius: 0 0 10px 10px;
       }
       .hero-section h1 {
@@ -205,16 +206,21 @@
         background: rgba(255, 255, 255, 0.05);
         border-radius: 5px;
       }
+
+      @media screen and (max-width: 500px) {
+        .hero-section h1 {
+          font-size: 20;
+        }
+      }
     </style>
   </head>
   <body>
     <!-- Navbar -->
-    <nav
-      id="navbar"
-      class="navbar navbar-expand-lg navbar-dark bg-dark d-none"
-    >
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark d-none">
       <div class="container">
-        <a class="navbar-brand" href="#"><span class="navbar-brand-text">ComradeUpdates</span></a>
+        <a class="navbar-brand" href="#"
+          ><span class="navbar-brand-text">ComradeUpdates</span></a
+        >
         <button
           class="navbar-toggler"
           type="button"
@@ -231,7 +237,12 @@
             <li class="nav-item position-relative">
               <a class="nav-link" href="#" onclick="showNotifications()">
                 <i class="bi bi-bell"></i>
-                <span id="notification-badge" class="badge bg-danger rounded-circle d-none" style="position: absolute; top: -5px; right: -10px;">0</span>
+                <span
+                  id="notification-badge"
+                  class="badge bg-danger rounded-circle d-none"
+                  style="position: absolute; top: -5px; right: -10px"
+                  >0</span
+                >
               </a>
             </li>
             <li class="nav-item">
@@ -258,15 +269,14 @@
             Stay ahead with the latest Web3 updates and opportunities!
           </p>
           <div class="d-flex justify-content-center gap-3">
-            <button class="btn btn-primary btn-lg" onclick="showAuth()">
-              Get Started
+            <button class="btn btn-primary btn-lg" onclick="showAuth('signup')">
+              Sign Up
             </button>
             <button
               class="btn btn-outline-light btn-lg"
-              data-bs-toggle="modal"
-              data-bs-target="#howItWorksModal"
+              onclick="showAuth('login')"
             >
-              How It Works
+              Login
             </button>
           </div>
         </div>
@@ -283,7 +293,9 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="howItWorksModalLabel">How ComradeUpdates Works</h5>
+              <h5 class="modal-title" id="howItWorksModalLabel">
+                How ComradeUpdates Works
+              </h5>
               <button
                 type="button"
                 class="btn-close btn-close-white"
@@ -294,110 +306,133 @@
             <div class="modal-body">
               <h6>Welcome to ComradeUpdates!</h6>
               <p>
-                ComradeUpdates is your go-to platform for staying informed about the latest Web3 opportunities, including crypto projects, tasks, surveys, and more.
+                ComradeUpdates is your go-to platform for staying informed about
+                the latest Web3 opportunities, including crypto projects, tasks,
+                surveys, and more.
               </p>
               <h6>How It Works</h6>
               <ul>
-                <li><strong>Sign Up or Log In:</strong> Create an account to access exclusive Web3 updates or log in if you're already a member.</li>
-                <li><strong>Explore Updates:</strong> Browse posts categorized as Crypto, Tasks, Surveys, and more, curated by our admin team.</li>
-                <li><strong>Engage:</strong> Like, comment, and share posts to connect with the community and stay updated on trending opportunities.</li>
-                <li><strong>Contribute (Admins):</strong> If you're an admin, post new updates to keep the community informed about the latest Web3 developments.</li>
-                <li><strong>Chat Room:</strong> Join the community chat to discuss updates and connect with other users.</li>
+                <li>
+                  <strong>Sign Up or Log In:</strong> Create an account to
+                  access exclusive Web3 updates or log in if you're already a
+                  member.
+                </li>
+                <li>
+                  <strong>Explore Updates:</strong> Browse posts categorized as
+                  Crypto, Tasks, Surveys, and more, curated by our admin team.
+                </li>
+                <li>
+                  <strong>Engage:</strong> Like, comment, and share posts to
+                  connect with the community and stay updated on trending
+                  opportunities.
+                </li>
+                <li>
+                  <strong>Contribute (Admins):</strong> If you're an admin, post
+                  new updates to keep the community informed about the latest
+                  Web3 developments.
+                </li>
+                <li>
+                  <strong>Chat Room:</strong> Join the community chat to discuss
+                  updates and connect with other users.
+                </li>
               </ul>
               <h6>Why Use ComradeUpdates?</h6>
               <ul>
-                <li><strong>Stay Ahead:</strong> Get real-time updates on Web3 trends and opportunities.</li>
-                <li><strong>Community-Driven:</strong> Interact with like-minded individuals passionate about Web3.</li>
-                <li><strong>Easy to Use:</strong> A user-friendly interface makes navigation a breeze.</li>
+                <li>
+                  <strong>Stay Ahead:</strong> Get real-time updates on Web3
+                  trends and opportunities.
+                </li>
+                <li>
+                  <strong>Community-Driven:</strong> Interact with like-minded
+                  individuals passionate about Web3.
+                </li>
+                <li>
+                  <strong>Easy to Use:</strong> A user-friendly interface makes
+                  navigation a breeze.
+                </li>
               </ul>
               <p>
-                Join ComradeUpdates today and unlock a world of Web3 possibilities!
+                Join ComradeUpdates today and unlock a world of Web3
+                possibilities!
               </p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="showAuth()">
-                Get Started
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onclick="showAuth('signup')"
+              >
+                Sign Up
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-light"
+                data-bs-dismiss="modal"
+                onclick="showAuth('login')"
+              >
+                Login
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Auth Section -->
-      <div id="auth-section" class="container my-5 d-none">
+      <!-- Signup Section -->
+      <div id="signup-section" class="container my-5 d-none">
         <div class="row justify-content-center">
           <div class="col-md-6">
             <div class="form-container">
-              <h2 id="auth-title" class="text-center mb-4">Sign Up</h2>
-              <form id="auth-form">
-                <div id="signup-fields">
-                  <div class="mb-3">
-                    <label for="name" class="form-label">Full Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="name"
-                      name="name"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="signup-email" class="form-label">Email</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="signup-email"
-                      name="email"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="signup-password" class="form-label">Password</label>
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="signup-password"
-                      name="password"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="confirm-password" class="form-label">Confirm Password</label>
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="confirm-password"
-                      name="confirm-password"
-                      required
-                    />
-                  </div>
+              <h2 class="text-center mb-4">Sign Up</h2>
+              <form id="signup-form">
+                <div class="mb-3">
+                  <label for="signup-name" class="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="signup-name"
+                    name="name"
+                    required
+                  />
                 </div>
-                <div id="login-fields" class="d-none">
-                  <div class="mb-3">
-                    <label for="login-email" class="form-label">Email</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="login-email"
-                      name="email"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="login-password" class="form-label">Password</label>
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="login-password"
-                      name="password"
-                      required
-                    />
-                  </div>
+                <div class="mb-3">
+                  <label for="signup-email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="signup-email"
+                    name="email"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="signup-password" class="form-label"
+                    >Password</label
+                  >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="signup-password"
+                    name="password"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="signup-confirm-password" class="form-label"
+                    >Confirm Password</label
+                  >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="signup-confirm-password"
+                    name="confirm-password"
+                    required
+                  />
                 </div>
                 <button
                   type="submit"
                   class="btn btn-primary w-100"
-                  id="auth-btn"
+                  id="signup-btn"
                 >
                   <span
                     class="spinner-border spinner-border-sm d-none"
@@ -407,7 +442,59 @@
                   Sign Up
                 </button>
                 <p class="text-center mt-3">
-                  <a href="#" onclick="toggleAuthMode()">Switch to <span id="auth-switch">Login</span></a>
+                  Already have an account?
+                  <a href="#" onclick="showAuth('login')">Login</a>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Login Section -->
+      <div id="login-section" class="container my-5 d-none">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="form-container">
+              <h2 class="text-center mb-4">Login</h2>
+              <form id="login-form">
+                <div class="mb-3">
+                  <label for="login-email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="login-email"
+                    name="email"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="login-password" class="form-label"
+                    >Password</label
+                  >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="login-password"
+                    name="password"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary w-100"
+                  id="login-btn"
+                >
+                  <span
+                    class="spinner-border spinner-border-sm d-none"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Login
+                </button>
+                <p class="text-center mt-3">
+                  Don't have an account?
+                  <a href="#" onclick="showAuth('signup')">Sign Up</a>
                 </p>
               </form>
             </div>
@@ -463,9 +550,12 @@
               class="form-control"
               id="admin-search"
               placeholder="Search posts by title, description, or category"
-              style="border-radius: 20px;"
+              style="border-radius: 20px"
             />
-            <button class="btn btn-outline-light" onclick="clearSearch('admin')">
+            <button
+              class="btn btn-outline-light"
+              onclick="clearSearch('admin')"
+            >
               <i class="bi bi-x"></i>
             </button>
           </div>
@@ -554,7 +644,7 @@
               class="form-control"
               id="user-search"
               placeholder="Search posts by title, description, or category"
-              style="border-radius: 20px;"
+              style="border-radius: 20px"
             />
             <button class="btn btn-outline-light" onclick="clearSearch('user')">
               <i class="bi bi-x"></i>
@@ -587,9 +677,27 @@
             </button>
           </div>
           <div class="mt-2 text-center">
-            <button type="button" class="btn btn-outline-light btn-sm" onclick="addEmoji('😊')">😊</button>
-            <button type="button" class="btn btn-outline-light btn-sm" onclick="addEmoji('👍')">👍</button>
-            <button type="button" class="btn btn-outline-light btn-sm" onclick="addEmoji('🎉')">🎉</button>
+            <button
+              type="button"
+              class="btn btn-outline-light btn-sm"
+              onclick="addEmoji('😊')"
+            >
+              😊
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-light btn-sm"
+              onclick="addEmoji('👍')"
+            >
+              👍
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-light btn-sm"
+              onclick="addEmoji('🎉')"
+            >
+              🎉
+            </button>
           </div>
         </form>
       </div>
@@ -662,7 +770,9 @@
             <div class="modal-body">
               <form id="update-post-form">
                 <div class="mb-3">
-                  <label for="update-post-title" class="form-label">Title</label>
+                  <label for="update-post-title" class="form-label"
+                    >Title</label
+                  >
                   <input
                     type="text"
                     class="form-control"
@@ -672,7 +782,9 @@
                   />
                 </div>
                 <div class="mb-3">
-                  <label for="update-post-desc" class="form-label">Description</label>
+                  <label for="update-post-desc" class="form-label"
+                    >Description</label
+                  >
                   <textarea
                     class="form-control"
                     id="update-post-desc"
@@ -692,7 +804,9 @@
                   />
                 </div>
                 <div class="mb-3">
-                  <label for="update-post-image" class="form-label">Image URL</label>
+                  <label for="update-post-image" class="form-label"
+                    >Image URL</label
+                  >
                   <input
                     type="url"
                     class="form-control"
@@ -702,7 +816,9 @@
                   />
                 </div>
                 <div class="mb-3">
-                  <label for="update-post-category" class="form-label">Category</label>
+                  <label for="update-post-category" class="form-label"
+                    >Category</label
+                  >
                   <select
                     class="form-control"
                     id="update-post-category"
@@ -743,7 +859,9 @@
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+              <h5 class="modal-title" id="notificationModalLabel">
+                Notifications
+              </h5>
               <button
                 type="button"
                 class="btn-close btn-close-white"
@@ -753,6 +871,33 @@
             </div>
             <div class="modal-body">
               <div id="notification-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Modal -->
+      <div
+        class="modal fade"
+        id="detailModal"
+        tabindex="-1"
+        aria-labelledby="detailModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="detailModalLabel">Post Details</h5>
+              <button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <h4 id="detail-title"></h4>
+              <p id="detail-description"></p>
             </div>
           </div>
         </div>

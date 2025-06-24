@@ -258,16 +258,8 @@
             Stay ahead with the latest Web3 updates and opportunities!
           </p>
           <div class="d-flex justify-content-center gap-3">
-            <button class="btn btn-primary btn-lg" onclick="showAuth()">
-              Get Started
-            </button>
-            <button
-              class="btn btn-outline-light btn-lg"
-              data-bs-toggle="modal"
-              data-bs-target="#howItWorksModal"
-            >
-              How It Works
-            </button>
+            <button class="btn btn-primary btn-lg" onclick="showAuth('signup')">Sign Up</button>
+            <button class="btn btn-outline-light btn-lg" onclick="showAuth('login')">Login</button>
           </div>
         </div>
       </div>
@@ -315,89 +307,64 @@
               </p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="showAuth()">
-                Get Started
-              </button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="showAuth('signup')">Sign Up</button>
+              <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal" onclick="showAuth('login')">Login</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Auth Section -->
-      <div id="auth-section" class="container my-5 d-none">
+      <!-- Signup Section -->
+      <div id="signup-section" class="container my-5 d-none">
         <div class="row justify-content-center">
           <div class="col-md-6">
             <div class="form-container">
-              <h2 id="auth-title" class="text-center mb-4">Sign Up</h2>
-              <form id="auth-form">
-                <div id="signup-fields">
-                  <div class="mb-3">
-                    <label for="name" class="form-label">Full Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="name"
-                      name="name"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="signup-email" class="form-label">Email</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="signup-email"
-                      name="email"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="signup-password" class="form-label">Password</label>
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="signup-password"
-                      name="password"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="confirm-password" class="form-label">Confirm Password</label>
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="confirm-password"
-                      name="confirm-password"
-                      required
-                    />
-                  </div>
+              <h2 class="text-center mb-4">Sign Up</h2>
+              <form id="signup-form">
+                <div class="mb-3">
+                  <label for="signup-name" class="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="signup-name"
+                    name="name"
+                    required
+                  />
                 </div>
-                <div id="login-fields" class="d-none">
-                  <div class="mb-3">
-                    <label for="login-email" class="form-label">Email</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="login-email"
-                      name="email"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="login-password" class="form-label">Password</label>
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="login-password"
-                      name="password"
-                      required
-                    />
-                  </div>
+                <div class="mb-3">
+                  <label for="signup-email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="signup-email"
+                    name="email"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="signup-password" class="form-label">Password</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="signup-password"
+                    name="password"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="signup-confirm-password" class="form-label">Confirm Password</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="signup-confirm-password"
+                    name="confirm-password"
+                    required
+                  />
                 </div>
                 <button
                   type="submit"
                   class="btn btn-primary w-100"
-                  id="auth-btn"
+                  id="signup-btn"
                 >
                   <span
                     class="spinner-border spinner-border-sm d-none"
@@ -407,7 +374,55 @@
                   Sign Up
                 </button>
                 <p class="text-center mt-3">
-                  <a href="#" onclick="toggleAuthMode()">Switch to <span id="auth-switch">Login</span></a>
+                  Already have an account? <a href="#" onclick="showAuth('login')">Login</a>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Login Section -->
+      <div id="login-section" class="container my-5 d-none">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="form-container">
+              <h2 class="text-center mb-4">Login</h2>
+              <form id="login-form">
+                <div class="mb-3">
+                  <label for="login-email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="login-email"
+                    name="email"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="login-password" class="form-label">Password</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="login-password"
+                    name="password"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary w-100"
+                  id="login-btn"
+                >
+                  <span
+                    class="spinner-border spinner-border-sm d-none"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Login
+                </button>
+                <p class="text-center mt-3">
+                  Don't have an account? <a href="#" onclick="showAuth('signup')">Sign Up</a>
                 </p>
               </form>
             </div>
@@ -753,6 +768,33 @@
             </div>
             <div class="modal-body">
               <div id="notification-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Modal -->
+      <div
+        class="modal fade"
+        id="detailModal"
+        tabindex="-1"
+        aria-labelledby="detailModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="detailModalLabel">Post Details</h5>
+              <button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <h4 id="detail-title"></h4>
+              <p id="detail-description"></p>
             </div>
           </div>
         </div>

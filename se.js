@@ -4,7 +4,6 @@ const API_CHATS = "https://685578c26a6ef0ed663299f6.mockapi.io/chats/chatss";
 const WHATSAPP_LINK = "https://wa.me/+2348124080834";
 
 let currentUser = null;
-let isLoginMode = false;
 let currentPostId = null;
 let allPosts = [];
 let captchaData = {};
@@ -12,6 +11,7 @@ let signupEmail = "";
 const commentModal = new bootstrap.Modal(document.getElementById("commentModal"));
 const updatePostModal = new bootstrap.Modal(document.getElementById("updatePostModal"));
 const notificationModal = new bootstrap.Modal(document.getElementById("notificationModal"));
+const detailModal = new bootstrap.Modal(document.getElementById("detailModal"));
 const toastElement = document.getElementById("appToast");
 const toast = new bootstrap.Toast(toastElement);
 let chatInterval = null;
@@ -42,89 +42,82 @@ function generateCaptcha() {
   document.getElementById("captcha-question").textContent = captchaData.question;
 }
 
-// Show auth section
-function showAuth() {
+// Show auth section with mode
+function showAuth(mode) {
   document.getElementById("landing-page").classList.add("d-none");
-  document.getElementById("auth-section").classList.remove("d-none");
   document.getElementById("navbar").classList.add("d-none");
-}
-
-// Toggle between signup and login
-function toggleAuthMode(isCaptchaSuccess = false) {
-  isLoginMode = !isLoginMode || isCaptchaSuccess;
-  document.getElementById("auth-title").textContent = isLoginMode ? "Login" : "Sign Up";
-  document.getElementById("auth-btn").innerHTML = isLoginMode
-    ? '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Login'
-    : '<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span> Sign Up';
-  document.getElementById("auth-switch").textContent = isLoginMode ? "Sign Up" : "Login";
-  document.getElementById("signup-fields").classList.toggle("d-none", isLoginMode);
-  document.getElementById("login-fields").classList.toggle("d-none", !isLoginMode);
-  document.getElementById("signup-email").disabled = isLoginMode;
-  document.getElementById("signup-password").disabled = isLoginMode;
-  document.getElementById("confirm-password").disabled = isLoginMode;
-  document.getElementById("name").disabled = isLoginMode;
-  document.getElementById("login-email").disabled = !isLoginMode;
-  document.getElementById("login-password").disabled = !isLoginMode;
-  if (isCaptchaSuccess) {
-    document.getElementById("login-email").value = signupEmail;
+  if (mode === "signup") {
+    document.getElementById("signup-section").classList.remove("d-none");
+    document.getElementById("login-section").classList.add("d-none");
+  } else if (mode === "login") {
+    document.getElementById("login-section").classList.remove("d-none");
+    document.getElementById("signup-section").classList.add("d-none");
   }
 }
 
-// Handle auth form submission
-document.getElementById("auth-form").addEventListener("submit", async (e) => {
+// Handle signup form submission
+document.getElementById("signup-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const button = document.getElementById("auth-btn");
+  const button = document.getElementById("signup-btn");
   toggleButtonLoading(button, true);
-  let email, password;
-  if (isLoginMode) {
-    email = document.getElementById("login-email").value;
-    password = document.getElementById("login-password").value;
-  } else {
-    email = document.getElementById("signup-email").value;
-    password = document.getElementById("signup-password").value;
-  }
+  const name = document.getElementById("signup-name").value;
+  const email = document.getElementById("signup-email").value;
+  const password = document.getElementById("signup-password").value;
+  const confirmPassword = document.getElementById("signup-confirm-password").value;
 
   try {
-    if (isLoginMode) {
-      const response = await fetch(API_USERS);
-      const users = await response.json();
-      const user = users.find((u) => u.email === email && u.password === password);
-      if (user) {
-        currentUser = user;
-        localStorage.setItem("currentUser", JSON.stringify(user));
-        showDashboard();
-        showToast(`Welcome back, ${user.name}!`);
-        document.getElementById("user-avatar").src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
-        document.getElementById("user-avatar").classList.remove("d-none");
-      } else {
-        alert("Invalid email or password");
-      }
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      toggleButtonLoading(button, false);
+      return;
+    }
+    const role = email === "ridwansaliu84@gmail.com" ? "admin" : "user";
+    const response = await fetch(API_USERS, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, role, name }),
+    });
+    if (response.ok) {
+      signupEmail = email;
+      document.getElementById("signup-form").reset();
+      document.getElementById("signup-section").classList.add("d-none");
+      document.getElementById("captcha-section").classList.remove("d-none");
+      generateCaptcha();
     } else {
-      const name = document.getElementById("name").value;
-      const confirmPassword = document.getElementById("confirm-password").value;
-      if (password !== confirmPassword) {
-        alert("Passwords do not match");
-        toggleButtonLoading(button, false);
-        return;
-      }
-      const role = email === "ridwansaliu84@gmail.com" ? "admin" : "user";
-      const response = await fetch(API_USERS, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role, name }),
-      });
-      if (response.ok) {
-        signupEmail = email;
-        document.getElementById("auth-form").reset();
-        document.getElementById("auth-section").classList.add("d-none");
-        document.getElementById("captcha-section").classList.remove("d-none");
-        generateCaptcha();
-      } else {
-        alert("Signup failed");
-      }
+      alert("Signup failed");
     }
   } catch (error) {
-    alert("An error occurred. Please try again.");
+    alert(`An error occurred: ${error.message}. Please try again.`);
+  } finally {
+    toggleButtonLoading(button, false);
+  }
+});
+
+// Handle login form submission
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const button = document.getElementById("login-btn");
+  toggleButtonLoading(button, true);
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+
+  try {
+    const response = await fetch(API_USERS);
+    if (!response.ok) throw new Error("Failed to fetch users");
+    const users = await response.json();
+    const user = users.find((u) => u.email === email && u.password === password);
+    if (user) {
+      currentUser = user;
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      showDashboard();
+      showToast(`Welcome back, ${user.name}!`);
+      document.getElementById("user-avatar").src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
+      document.getElementById("user-avatar").classList.remove("d-none");
+    } else {
+      alert("Invalid email or password");
+    }
+  } catch (error) {
+    alert(`An error occurred: ${error.message}. Please try again.`);
   } finally {
     toggleButtonLoading(button, false);
   }
@@ -138,8 +131,8 @@ document.getElementById("captcha-form").addEventListener("submit", (e) => {
   const answer = parseInt(document.getElementById("captcha-answer").value);
   if (answer === captchaData.answer) {
     document.getElementById("captcha-section").classList.add("d-none");
-    document.getElementById("auth-section").classList.remove("d-none");
-    toggleAuthMode(true);
+    document.getElementById("login-section").classList.remove("d-none");
+    document.getElementById("login-email").value = signupEmail;
   } else {
     alert("Incorrect answer. Try again.");
     generateCaptcha();
@@ -155,6 +148,7 @@ async function checkLoginStatus() {
     try {
       const user = JSON.parse(storedUser);
       const response = await fetch(API_USERS);
+      if (!response.ok) throw new Error("Failed to fetch users");
       const users = await response.json();
       const validUser = users.find((u) => u.email === user.email && u.password === user.password);
       if (validUser) {
@@ -167,7 +161,7 @@ async function checkLoginStatus() {
         document.getElementById("landing-page").classList.remove("d-none");
       }
     } catch (error) {
-      alert("Failed to verify login status. Please try again.");
+      alert(`Failed to verify login status: ${error.message}. Please try again.`);
       localStorage.removeItem("currentUser");
     }
   }
@@ -175,7 +169,8 @@ async function checkLoginStatus() {
 
 // Show appropriate dashboard
 function showDashboard() {
-  document.getElementById("auth-section").classList.add("d-none");
+  document.getElementById("signup-section").classList.add("d-none");
+  document.getElementById("login-section").classList.add("d-none");
   document.getElementById("captcha-section").classList.add("d-none");
   document.getElementById("chat-section").classList.add("d-none");
   document.getElementById("navbar").classList.remove("d-none");
@@ -253,7 +248,7 @@ async function loadPosts(type) {
   }
 }
 
-// Render posts with optional filtering
+// Render posts with optional filtering and equal height
 function renderPosts(type, posts) {
   const container = document.getElementById(`${type}-posts`);
   container.innerHTML = "";
@@ -274,11 +269,13 @@ function renderPosts(type, posts) {
         timestampBadge = '<span class="badge bg-secondary timestamp-badge">6+ days ago</span>';
       }
     }
+    const shortDesc = post.description.length > 120 ? post.description.substring(0, 120) + "..." : post.description;
+    const showMoreBtn = post.description.length > 120 ? `<button class="btn btn-sm btn-outline-light mt-2" onclick="showDetailModal('${post.id}')">Show More</button>` : '';
     const card = `
       <div class="col-md-4 mb-4">
-        <div class="card">
+        <div class="card h-100">
           <img src="${post.image}" class="card-img-top" alt="Web3 Update" style="height: 200px; object-fit: cover;">
-          <div class="card-body">
+          <div class="card-body d-flex flex-column">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h5 class="card-title mb-0">${post.title}</h5>
               <div>
@@ -286,8 +283,9 @@ function renderPosts(type, posts) {
                 ${timestampBadge}
               </div>
             </div>
-            <p class="card-text">${post.description}</p>
-            <div class="post-buttons mb-2">
+            <p class="card-text flex-grow-1">${shortDesc}</p>
+            ${showMoreBtn}
+            <div class="post-buttons mt-3">
               <a href="${post.link}" target="_blank" class="btn btn-primary btn-sm">Visit Link</a>
               ${
                 type === "user"
@@ -298,7 +296,7 @@ function renderPosts(type, posts) {
             ${
               type === "user"
                 ? `
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center mt-3">
                   <button class="btn btn-outline-light btn-sm" onclick="likePost('${post.id}', this)">
                     <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                     <i class="bi bi-heart-fill"></i> ${post.likes}
@@ -313,7 +311,7 @@ function renderPosts(type, posts) {
                 </div>
               `
                 : `
-                <div class="post-buttons">
+                <div class="post-buttons mt-3">
                   <button class="btn btn-warning btn-sm" onclick="showUpdateModal('${post.id}')">
                     <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                     Update Post
@@ -422,6 +420,7 @@ async function likePost(postId, button) {
 async function getUserByEmail(email) {
   try {
     const response = await fetch(API_USERS);
+    if (!response.ok) throw new Error("Failed to fetch users");
     const users = await response.json();
     return users.find((u) => u.email === email) || { name: "Unknown User" };
   } catch (error) {
@@ -658,13 +657,27 @@ function logout() {
   document.getElementById("admin-dashboard").classList.add("d-none");
   document.getElementById("user-dashboard").classList.add("d-none");
   document.getElementById("chat-section").classList.add("d-none");
-  document.getElementById("auth-section").classList.add("d-none");
+  document.getElementById("signup-section").classList.add("d-none");
+  document.getElementById("login-section").classList.add("d-none");
   document.getElementById("captcha-section").classList.add("d-none");
   document.getElementById("landing-page").classList.remove("d-none");
   document.getElementById("navbar").classList.add("d-none");
   document.getElementById("user-avatar").classList.add("d-none");
   showToast("Logged out successfully!");
-};
+}
+
+// Show detail modal
+async function showDetailModal(postId) {
+  try {
+    const response = await fetch(`${API_POSTS}/${postId}`);
+    const post = await response.json();
+    document.getElementById("detail-title").textContent = post.title;
+    document.getElementById("detail-description").textContent = post.description;
+    detailModal.show();
+  } catch (error) {
+    alert("Failed to load post details");
+  }
+}
 
 // Initialize login status check
 checkLoginStatus();
