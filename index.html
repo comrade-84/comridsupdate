@@ -298,6 +298,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item bg-light rounded ">
+              <a id="becomeAdminNav" class="nav-link text-dark" href="https://wa.me/2348124080834?text=hi%20freeupdate%20admin%2C%20i%20want%20to%20become%20an%20admin" target="_blank">
+                Become an Admin
+              </a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="#" onclick="showChat()">Chat</a>
             </li>
@@ -331,10 +336,13 @@
       <!-- Landing Page -->
       <div id="landing-page" class="hero-section">
         <div>
-          <h1 class="mb-4 floating">Welcome to ComradeUpdates</h1>
+          <h1 class="mb-4 floating">Welcome to FreeUpdates</h1>
           <p class="lead mb-4">
             Stay ahead with the latest Web3 updates and opportunities!
           </p>
+          <button class="btn btn-outline-info my-3" data-bs-toggle="modal" data-bs-target="#howItWorksModal">
+            How It Works?
+          </button>
           <div class="d-flex justify-content-center gap-3">
             <button class="btn btn-primary btn-lg" onclick="showAuth('signup')">
               Sign Up
@@ -361,7 +369,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="howItWorksModalLabel">
-                How ComradeUpdates Works
+                How FreeUpdates Works
               </h5>
               <button
                 type="button"
@@ -371,9 +379,9 @@
               ></button>
             </div>
             <div class="modal-body">
-              <h6>Welcome to ComradeUpdates!</h6>
+              <h6>Welcome to FreeUpdates!</h6>
               <p>
-                ComradeUpdates is your go-to platform for staying informed about
+                FreeUpdates is your go-to platform for staying informed about
                 the latest Web3 opportunities, including crypto projects, tasks,
                 surveys, and more.
               </p>
@@ -750,8 +758,7 @@
                   <i class="bi bi-hand-thumbs-up"></i>
                 </button>
               </div>
-            </div>
-            <button type="submit" class="btn btn-primary" id="chat-submit-btn">
+            </div>           <button type="submit" class="btn btn-primary" id="chat-submit-btn">
               <span
                 class="spinner-border spinner-border-sm d-none"
                 role="status"
@@ -783,6 +790,7 @@
               🎉
             </button>
           </div>
+</div>
       </div>
 
       <!-- Comment Modal -->
@@ -977,10 +985,9 @@
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
-            </div>
-            <div class="modal-body">
-              <h4 id="detail-title"></h4>
-              <p id="detail-description"></p>
+                        <div class="modal-body" id="detail-description">
+              <!-- Content will be injected here by JavaScript -->
+"></p>
             </div>
           </div>
         </div>
@@ -1026,3 +1033,4 @@
     <script src="script.js"></script>
   </body>
 </html>
+

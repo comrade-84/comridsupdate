@@ -27,14 +27,22 @@ const commentModal = new bootstrap.Modal(document.getElementById("commentModal")
 const updatePostModal = new bootstrap.Modal(document.getElementById("updatePostModal"));
 const notificationModal = new bootstrap.Modal(document.getElementById("notificationModal"));
 const detailModal = new bootstrap.Modal(document.getElementById("detailModal"));
-const toastElement = document.getElementById("appToast");
-const toast = new bootstrap.Toast(toastElement);
+let toast;
+document.addEventListener('DOMContentLoaded', function() {
+  const toastElement = document.getElementById("appToast");
+  if (toastElement) {
+    toast = new bootstrap.Toast(toastElement);
+  }
+});
 let chatInterval = null;
+
+
 
 // Show toast notification
 function showToast(message) {
-  document.getElementById("toast-message").textContent = message;
-  toast.show();
+  const toastMsgElem = document.getElementById("toast-message");
+  if (toastMsgElem) toastMsgElem.textContent = message;
+  if (toast) toast.show();
 }
 
 // Toggle button loading state
@@ -162,6 +170,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
       showToast(`Welcome back, ${user.name}!`);
       document.getElementById("user-avatar").src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
       document.getElementById("user-avatar").classList.remove("d-none");
+      
     } else {
       alert("Invalid email or password");
     }
@@ -352,7 +361,13 @@ function renderPosts(type, posts) {
               </div>
             </div>
             <p class="card-text flex-grow-1">${shortDesc}</p>
-            ${showMoreBtn}
+            ${post.description.length > 120 ? `
+              <div class="d-flex justify-content-center mt-2">
+                <button class="btn btn-sm btn-outline-light" onclick="showDetailModal('${post.id}')">
+                  <i class="bi bi-eye"></i> Show More
+                </button>
+              </div>
+            ` : ''}
             <div class="post-buttons mt-3">
               <a href="${post.link}" target="_blank" class="btn btn-primary btn-sm">Visit Link</a>
               ${
@@ -369,7 +384,7 @@ function renderPosts(type, posts) {
                     <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                     <i class="bi bi-heart-fill"></i> ${post.likes}
                   </button>
-                  <button class="btn btn-outline-light btn-sm" onclick="showComments('${post.id}')">
+                  <button class="btn btn-outline-light btn-sm comment-btn" data-post-id="${post.id}">
                     <i class="bi bi-chat"></i> ${post.comments.length}
                   </button>
                   <button class="btn btn-outline-light btn-sm" onclick="sharePost('${post.id}', this)">
@@ -397,45 +412,76 @@ function renderPosts(type, posts) {
     `;
     container.innerHTML += card;
   });
+
+  // Attach comment button event listeners
+  container.querySelectorAll('.comment-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const postId = this.getAttribute('data-post-id');
+      const post = posts.find(p => p.id == postId);
+      if (post) showComments(post);
+    });
+  });
+  // Attach update button event listeners (admin)
+  container.querySelectorAll('.btn-warning').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const postId = this.getAttribute('onclick')?.match(/'(.*?)'/)?.[1];
+      if (postId) showUpdateModal(postId);
+    });
+  });
 }
 
 // Update notification badge
 function updateNotificationBadge() {
   if (!currentUser) return;
-  const lastViewed = localStorage.getItem(`lastViewed_${currentUser.email}`);
-  const lastViewedDate = lastViewed ? new Date(lastViewed) : new Date(0);
-  const newPosts = allPosts.filter(post => {
-    const postDate = new Date(post.createdAt);
-    return postDate > lastViewedDate && postDate >= new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
-  });
   const badge = document.getElementById("notification-badge");
-  badge.textContent = newPosts.length;
-  badge.classList.toggle("d-none", newPosts.length === 0);
+  if (!badge) return;
+  const lastSeenKey = `notifications_last_seen_${currentUser.email}`;
+  const lastSeen = localStorage.getItem(lastSeenKey);
+  const unseen = allPosts.filter(post => new Date(post.createdAt) > new Date(lastSeen || 0));
+  if (unseen.length > 0) {
+    badge.textContent = unseen.length;
+    badge.classList.remove("d-none");
+  } else {
+    badge.classList.add("d-none");
+    badge.textContent = 0;
+  }
 }
 
 // Show notifications
 function showNotifications() {
-  if (!currentUser) return;
-  const lastViewed = localStorage.getItem(`lastViewed_${currentUser.email}`);
-  const lastViewedDate = lastViewed ? new Date(lastViewed) : new Date(0);
-  const newPosts = allPosts.filter(post => {
-    const postDate = new Date(post.createdAt);
+  try {
+    if (!currentUser) return;
+    const notificationList = document.getElementById("notification-list");
+    if (!notificationList) return;
+    const lastSeenKey = `notifications_last_seen_${currentUser.email}`;
+    const lastSeen = localStorage.getItem(lastSeenKey);
+    // Find new posts since last seen
+    const newPosts = allPosts.filter(post => new Date(post.createdAt) > new Date(lastSeen || 0));
+    if (newPosts.length === 0) {
+      notificationList.innerHTML = '<div class="text-center text-muted">No new updates.</div>';
+    } else {
+      notificationList.innerHTML = newPosts.map(post => `
+        <div class="card mb-2">
+          <div class="card-body">
+            <h6 class="card-title mb-1">${post.title}</h6>
+            <p class="card-text mb-1">${post.description}</p>
+            <span class="badge bg-primary">${post.category}</span>
+            <small class="text-muted float-end">${new Date(post.createdAt).toLocaleString()}</small>
+          </div>
+        </div>
+      `).join('');
+    }
+    // Mark all as seen
+    localStorage.setItem(lastSeenKey, new Date().toISOString());
+    updateNotificationBadge();
+    notificationModal.show();
+  } catch (error) {
+    console.error('Error showing notifications:', error);
+    showToast('Failed to show notifications');
+  }
     return postDate > lastViewedDate && postDate >= new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
-  });
-  const notificationList = document.getElementById("notification-list");
-  notificationList.innerHTML = newPosts.length === 0
-    ? `<p class="text-center">No new updates.</p>`
-    : newPosts.map(post => `
-      <div class="notification-item mb-4">
-        <strong>${post.title}</strong>
-        <p class="mb-0"><small>${post.category || 'Other'} • Posted ${new Date(post.createdAt).toLocaleDateString()}</small></p>
-      </div>
-      <hr class="my-2">
-    `).join('');
-  localStorage.setItem(`lastViewed_${currentUser.email}`, new Date().toISOString());
-  updateNotificationBadge();
-  notificationModal.show();
-}
+  };
+
 
 // Search posts
 function searchPosts(type) {
@@ -497,14 +543,13 @@ async function getUserByEmail(email) {
 }
 
 // Show comments in modal
-async function showComments(postId) {
-  currentPostId = postId;
+async function showComments(post) {
+  currentPostId = post.id;
   try {
-    const response = await fetch(`${API_POSTS}/${postId}`);
-    const post = await response.json();
     const commentsContainer = document.getElementById("modal-comments");
+    if (!commentsContainer) return;
     commentsContainer.innerHTML = "";
-    if (post.comments.length === 0) {
+    if (!post.comments || post.comments.length === 0) {
       commentsContainer.innerHTML = '<p class="mb-0"><small>No comments yet.</small></p>';
     } else {
       for (const comment of post.comments) {
@@ -523,7 +568,7 @@ async function showComments(postId) {
     }
     commentModal.show();
   } catch (error) {
-    alert("Failed to load comments");
+    showToast("Failed to load comments");
   }
 }
 
@@ -544,7 +589,9 @@ document.getElementById("comment-form").addEventListener("submit", async (e) => 
     });
     if (updateResponse.ok) {
       document.getElementById("comment-form").reset();
-      showComments(currentPostId);
+      const updatedPostResponse = await fetch(`${API_POSTS}/${currentPostId}`);
+const updatedPost = await updatedPostResponse.json();
+showComments(updatedPost);
       loadPosts(currentUser.role);
       showToast("Comment added!");
     } else {
@@ -605,18 +652,24 @@ async function deletePost(postId, button) {
 
 // Show update post modal
 async function showUpdateModal(postId) {
-  currentPostId = postId;
   try {
-    const response = await fetch(`${API_POSTS}/${postId}`);
-    const post = await response.json();
-    document.getElementById("update-post-title").value = post.title;
-    document.getElementById("update-post-desc").value = post.description;
-    document.getElementById("update-post-link").value = post.link;
-    document.getElementById("update-post-image").value = post.image;
-    document.getElementById("update-post-category").value = post.category || "Other";
+    let post = allPosts.find((p) => p.id === postId);
+    if (!post) {
+      // Fallback: fetch post if not in allPosts
+      const response = await fetch(`${API_POSTS}/${postId}`);
+      if (!response.ok) throw new Error('Failed to fetch post');
+      post = await response.json();
+    }
+    document.getElementById("update-post-title").value = post.title || '';
+    document.getElementById("update-post-desc").value = post.description || '';
+    document.getElementById("update-post-link").value = post.link || '';
+    document.getElementById("update-post-image").value = post.image || '';
+    document.getElementById("update-post-category").value = post.category || '';
+    currentPostId = postId;
     updatePostModal.show();
   } catch (error) {
-    alert("Failed to load post data");
+    console.error('Error loading post for update:', error);
+    showToast('Failed to load post for update');
   }
 }
 
@@ -733,20 +786,83 @@ function logout() {
   document.getElementById("navbar").classList.add("d-none");
   document.getElementById("user-avatar").classList.add("d-none");
   showToast("Logged out successfully!");
+  
 }
 
 // Show detail modal
 async function showDetailModal(postId) {
   try {
     const response = await fetch(`${API_POSTS}/${postId}`);
+    if (!response.ok) throw new Error('Failed to fetch post');
     const post = await response.json();
-    document.getElementById("detail-title").textContent = post.title;
-    document.getElementById("detail-description").textContent = post.description;
+    const titleElem = document.getElementById("detailModalLabel");
+    const descElem = document.getElementById("detail-description");
+    if (!titleElem || !descElem) throw new Error("Modal elements missing");
+    titleElem.textContent = post.title;
+    descElem.innerHTML = `
+      <p class="mb-3">${post.description}</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="badge bg-primary">${post.category}</span>
+        <small class="text-muted">Posted: ${new Date(post.createdAt).toLocaleDateString()}</small>
+      </div>
+    `;
     detailModal.show();
   } catch (error) {
-    alert("Failed to load post details");
+    console.error('Error loading post details:', error);
+    showToast("Failed to load post details");
   }
 }
+
+// Show update post modal
+async function showUpdateModal(postId) {
+  try {
+    let post = allPosts.find((p) => p.id === postId);
+    if (!post) {
+      const response = await fetch(`${API_POSTS}/${postId}`);
+      if (!response.ok) throw new Error('Failed to fetch post');
+      post = await response.json();
+    }
+    // Set form fields
+    document.getElementById("update-post-title").value = post.title || '';
+    document.getElementById("update-post-desc").value = post.description || '';
+    document.getElementById("update-post-link").value = post.link || '';
+    document.getElementById("update-post-image").value = post.image || '';
+    document.getElementById("update-post-category").value = post.category || '';
+    currentPostId = postId;
+    updatePostModal.show();
+  } catch (error) {
+    console.error('Error loading post for update:', error);
+    showToast('Failed to load post for update');
+  }
+}
+
+
+
+// Show notifications modal
+function showNotifications() {
+  try {
+    notificationModal.show();
+  } catch (error) {
+    console.error('Error showing notifications:', error);
+    showToast('Failed to show notifications');
+  }
+}
+
+// Add missing handler for delete post
+async function deletePost(postId) {
+  if (!confirm('Are you sure you want to delete this post?')) return;
+  try {
+    const response = await fetch(`${API_POSTS}/${postId}`, { method: 'DELETE' });
+    if (!response.ok) throw new Error('Failed to delete post');
+    showToast('Post deleted successfully!');
+    loadPosts('admin');
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    showToast('Failed to delete post');
+  }
+}
+
+
 
 // Initialize login status check
 checkLoginStatus();
