@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact</title>
+    <title>ComradeUpdates - Web3 Community Platform</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -14,32 +14,49 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
       rel="stylesheet"
     />
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <!-- Meta Tags -->
+    <meta name="description" content="Join the Web3 community and stay updated with the latest blockchain news and updates. Connect with fellow enthusiasts and experts.">
+    <meta name="keywords" content="web3, blockchain, cryptocurrency, community, updates">
+    <meta name="author" content="ComradeUpdates">
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="ComradeUpdates - Web3 Community Platform">
+    <meta property="og:description" content="Stay updated with the latest Web3 news and connect with the community">
+    <meta property="og:image" content="https://api.comradeupdates.com/images/og-image.png">
+    <meta property="og:url" content="https://comradeupdates.com">
+    <meta property="og:type" content="website">
     <style>
       body {
         background: linear-gradient(135deg, #1e3c72, #2a5298);
         color: #fff;
-        font-family: Arial, sans-serif;
+        font-family: "Arial", sans-serif;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
+        padding: 0;
+        margin: 0;
       }
       main {
         flex: 1 0 auto;
+        padding: 2rem 0;
       }
       .navbar-brand {
         font-weight: bold;
         font-size: 1.5rem;
         display: flex;
         align-items: center;
+        gap: 0.5rem;
       }
       .navbar-brand::before {
         content: "CU";
         background: #e50914;
         color: #fff;
-        padding: 5px 10px;
-        border-radius: 5px;
-        margin-right: 10px;
+        padding: 0.3rem 0.8rem;
+        border-radius: 6px;
+        margin-right: 0.5rem;
         font-size: 1.2rem;
+        font-weight: 700;
       }
       .navbar-brand-text {
         display: inline;
@@ -54,46 +71,64 @@
         border: none;
         backdrop-filter: blur(10px);
         color: #fff;
-        transition: transform 0.3s;
+        transition: transform 0.3s, box-shadow 0.3s;
+        border-radius: 12px;
+        overflow: hidden;
       }
       .card:hover {
         transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
       }
       .btn-primary {
         background-color: #e50914;
         border-color: #e50914;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
       }
       .btn-primary:hover {
         background-color: #c40812;
         border-color: #c40812;
+        transform: translateY(-2px);
       }
       .btn-outline-light {
         color: #fff;
-        border-color: #fff;
+        border-color: rgba(255, 255, 255, 0.5);
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
       }
       .btn-outline-light:hover {
-        background-color: #fff;
-        color: #1e3c72;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        transform: translateY(-2px);
       }
       .hero-section {
-        height: 100vh;
+        min-height: 80vh;
         display: flex;
         align-items: center;
         justify-content: center;
         text-align: center;
-        background: url("https://images.unsplash.com/photo-1620641788421-7a1c342ea42e")
-          no-repeat center/cover;
+        background: linear-gradient(rgba(30, 60, 114, 0.9), rgba(30, 60, 114, 0.9)),
+                    url("https://images.unsplash.com/photo-1620641788421-7a1c342ea42e")
+                    no-repeat center/cover;
+        border-radius: 0 0 15px 15px;
+        padding: 2rem;
       }
       .hero-section h1 {
-        font-size: 3rem;
-        font-weight: bold;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        font-size: 3.5rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        margin-bottom: 1.5rem;
       }
       .form-container {
         background: rgba(255, 255, 255, 0.2);
-        padding: 2rem;
-        border-radius: 10px;
-        backdrop-filter: blur(10px);
+        padding: 2.5rem;
+        border-radius: 15px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        max-width: 500px;
+        margin: 0 auto;
       }
       .floating {
         animation: float 3s ease-in-out infinite;
@@ -112,9 +147,14 @@
         color: #fff;
         backdrop-filter: blur(10px);
         border: none;
+        border-radius: 12px;
       }
       .modal-header {
         border-bottom: none;
+        padding: 1rem;
+      }
+      .modal-body {
+        padding: 1.5rem;
       }
       .btn-loading .spinner-border {
         width: 1rem;
@@ -127,58 +167,127 @@
         right: 20px;
         z-index: 1055;
       }
+      .toast {
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+        border: none;
+        border-radius: 8px;
+      }
       footer {
         background: #1e3c72;
-        padding: 1.5rem 0;
+        padding: 2rem 0;
         flex-shrink: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
       }
       footer .cu-logo::before {
         content: "CU";
         background: #e50914;
         color: #fff;
-        padding: 3px 8px;
-        border-radius: 5px;
-        margin-right: 8px;
+        padding: 0.3rem 0.8rem;
+        border-radius: 6px;
+        margin-right: 0.8rem;
         font-size: 1rem;
+        font-weight: 700;
       }
       footer a {
         color: #fff;
         text-decoration: none;
+        transition: color 0.3s ease;
       }
       footer a:hover {
         text-decoration: underline;
+        color: #e50914;
       }
       .search-container {
-        max-width: 500px;
+        max-width: 600px;
         margin: 0 auto 2rem;
+        position: relative;
+      }
+      .search-container input {
+        padding-left: 2.5rem;
+      }
+      .search-container .bi-search {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.7);
       }
       .avatar {
         width: 30px;
         height: 30px;
         border-radius: 50%;
         margin-right: 0.5rem;
+        object-fit: cover;
       }
       .user-avatar {
         width: 32px;
         height: 32px;
         border-radius: 50%;
         margin-left: 1rem;
+        object-fit: cover;
       }
-      .category-badge, .timestamp-badge {
+      .category-badge,
+      .timestamp-badge {
         font-size: 0.8rem;
         padding: 0.3rem 0.6rem;
         margin-left: 0.5rem;
+        border-radius: 20px;
+      }
+      .post-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .chat-message {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        max-width: 80%;
+      }
+      .chat-message.user {
+        margin-left: auto;
+        background: rgba(229, 9, 20, 0.1);
+      }
+      .chat-section {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+      }
+      #chat-messages {
+        max-height: 400px;
+        overflow-y: auto;
+        padding: 1rem;
+        padding-right: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .notification-item {
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 5px;
+      }
+
+      @media screen and (max-width: 500px) {
+        .hero-section h1 {
+          font-size: 20;
+        }
       }
     </style>
   </head>
   <body>
     <!-- Navbar -->
-    <nav
-      id="navbar"
-      class="navbar navbar-expand-lg navbar-dark bg-dark d-none"
-    >
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-dark d-none">
       <div class="container">
-        <a class="navbar-brand" href="#"><span class="navbar-brand-text">ComradeUpdates</span></a>
+        <a class="navbar-brand" href="#"
+          ><span class="navbar-brand-text">ComradeUpdates</span></a
+        >
         <button
           class="navbar-toggler"
           type="button"
@@ -189,6 +298,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item">
+              <a class="nav-link" href="#" onclick="showChat()">Chat</a>
+            </li>
+            <li class="nav-item position-relative">
+              <a class="nav-link" href="#" onclick="showNotifications()">
+                <i class="bi bi-bell"></i>
+                <span
+                  id="notification-badge"
+                  class="badge bg-danger rounded-circle d-none"
+                  style="position: absolute; top: -5px; right: -10px"
+                  >0</span
+                >
+              </a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="#" onclick="logout()">Logout</a>
             </li>
@@ -213,15 +336,14 @@
             Stay ahead with the latest Web3 updates and opportunities!
           </p>
           <div class="d-flex justify-content-center gap-3">
-            <button class="btn btn-primary btn-lg" onclick="showAuth()">
-              Get Started
+            <button class="btn btn-primary btn-lg" onclick="showAuth('signup')">
+              Sign Up
             </button>
             <button
               class="btn btn-outline-light btn-lg"
-              data-bs-toggle="modal"
-              data-bs-target="#howItWorksModal"
+              onclick="showAuth('login')"
             >
-              How It Works
+              Login
             </button>
           </div>
         </div>
@@ -238,7 +360,9 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="howItWorksModalLabel">How ComradeUpdates Works</h5>
+              <h5 class="modal-title" id="howItWorksModalLabel">
+                How ComradeUpdates Works
+              </h5>
               <button
                 type="button"
                 class="btn-close btn-close-white"
@@ -249,115 +373,133 @@
             <div class="modal-body">
               <h6>Welcome to ComradeUpdates!</h6>
               <p>
-                ComradeUpdates is your go-to platform for staying informed about the latest Web3 opportunities, including crypto projects, tasks, surveys, and more.
+                ComradeUpdates is your go-to platform for staying informed about
+                the latest Web3 opportunities, including crypto projects, tasks,
+                surveys, and more.
               </p>
               <h6>How It Works</h6>
               <ul>
-                <li><strong>Sign Up or Log In:</strong> Create an account to access exclusive Web3 updates or log in if you're already a member.</li>
-                <li><strong>Explore Updates:</strong> Browse posts categorized as Crypto, Tasks, Surveys, and more, curated by our admin team.</li>
-                <li><strong>Engage:</strong> Like, comment, and share posts to connect with the community and stay updated on trending opportunities.</li>
-                <li><strong>Contribute (Admins):</strong> If you're an admin, post new updates to keep the community informed about the latest Web3 developments.</li>
+                <li>
+                  <strong>Sign Up or Log In:</strong> Create an account to
+                  access exclusive Web3 updates or log in if you're already a
+                  member.
+                </li>
+                <li>
+                  <strong>Explore Updates:</strong> Browse posts categorized as
+                  Crypto, Tasks, Surveys, and more, curated by our admin team.
+                </li>
+                <li>
+                  <strong>Engage:</strong> Like, comment, and share posts to
+                  connect with the community and stay updated on trending
+                  opportunities.
+                </li>
+                <li>
+                  <strong>Contribute (Admins):</strong> If you're an admin, post
+                  new updates to keep the community informed about the latest
+                  Web3 developments.
+                </li>
+                <li>
+                  <strong>Chat Room:</strong> Join the community chat to discuss
+                  updates and connect with other users.
+                </li>
               </ul>
               <h6>Why Use ComradeUpdates?</h6>
               <ul>
-                <li><strong>Stay Ahead:</strong> Get real-time updates on Web3 trends and opportunities.</li>
-                <li><strong>Community-Driven:</strong> Interact with like-minded individuals passionate about Web3.</li>
-                <li><strong>Easy to Use:</strong> A user-friendly interface makes navigation a breeze.</li>
+                <li>
+                  <strong>Stay Ahead:</strong> Get real-time updates on Web3
+                  trends and opportunities.
+                </li>
+                <li>
+                  <strong>Community-Driven:</strong> Interact with like-minded
+                  individuals passionate about Web3.
+                </li>
+                <li>
+                  <strong>Easy to Use:</strong> A user-friendly interface makes
+                  navigation a breeze.
+                </li>
               </ul>
               <p>
-                Join ComradeUpdates today and unlock a world of Web3 possibilities!
+                Join ComradeUpdates today and unlock a world of Web3
+                possibilities!
               </p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="showAuth()">
-                Get Started
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                onclick="showAuth('signup')"
+              >
+                Sign Up
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-light"
+                data-bs-dismiss="modal"
+                onclick="showAuth('login')"
+              >
+                Login
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Auth Section -->
-      <div id="auth-section" class="container my-5 d-none">
+      <!-- Signup Section -->
+      <div id="signup-section" class="container my-5 d-none">
         <div class="row justify-content-center">
           <div class="col-md-6">
             <div class="form-container">
-              <h2 id="auth-title" class="text-center mb-4">Sign Up</h2>
-              <form id="auth-form">
-                <div id="signup-fields">
-                  <div class="mb-3">
-                    <label for="name" class="form-label">Full Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="name"
-                      name="name"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="signup-email" class="form-label">Email</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="signup-email"
-                      name="email"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="signup-password" class="form-label"
-                      >Password</label
-                    >
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="signup-password"
-                      name="password"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="confirm-password" class="form-label"
-                      >Confirm Password</label
-                    >
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="confirm-password"
-                      name="confirm-password"
-                      required
-                    />
-                  </div>
+              <h2 class="text-center mb-4">Sign Up</h2>
+              <form id="signup-form">
+                <div class="mb-3">
+                  <label for="signup-name" class="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="signup-name"
+                    name="name"
+                    required
+                  />
                 </div>
-                <div id="login-fields" class="d-none">
-                  <div class="mb-3">
-                    <label for="login-email" class="form-label">Email</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="login-email"
-                      name="email"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="login-password" class="form-label"
-                      >Password</label
-                    >
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="login-password"
-                      name="password"
-                      required
-                    />
-                  </div>
+                <div class="mb-3">
+                  <label for="signup-email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="signup-email"
+                    name="email"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="signup-password" class="form-label"
+                    >Password</label
+                  >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="signup-password"
+                    name="password"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="signup-confirm-password" class="form-label"
+                    >Confirm Password</label
+                  >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="signup-confirm-password"
+                    name="confirm-password"
+                    required
+                  />
                 </div>
                 <button
                   type="submit"
                   class="btn btn-primary w-100"
-                  id="auth-btn"
+                  id="signup-btn"
                 >
                   <span
                     class="spinner-border spinner-border-sm d-none"
@@ -367,9 +509,59 @@
                   Sign Up
                 </button>
                 <p class="text-center mt-3">
-                  <a href="#" onclick="toggleAuthMode()"
-                    >Switch to <span id="auth-switch">Login</span></a
+                  Already have an account?
+                  <a href="#" onclick="showAuth('login')">Login</a>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Login Section -->
+      <div id="login-section" class="container my-5 d-none">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="form-container">
+              <h2 class="text-center mb-4">Login</h2>
+              <form id="login-form">
+                <div class="mb-3">
+                  <label for="login-email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="login-email"
+                    name="email"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="login-password" class="form-label"
+                    >Password</label
                   >
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="login-password"
+                    name="password"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary w-100"
+                  id="login-btn"
+                >
+                  <span
+                    class="spinner-border spinner-border-sm d-none"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Login
+                </button>
+                <p class="text-center mt-3">
+                  Don't have an account?
+                  <a href="#" onclick="showAuth('signup')">Sign Up</a>
                 </p>
               </form>
             </div>
@@ -425,8 +617,12 @@
               class="form-control"
               id="admin-search"
               placeholder="Search posts by title, description, or category"
+              style="border-radius: 20px"
             />
-            <button class="btn btn-outline-light" onclick="clearSearch('admin')">
+            <button
+              class="btn btn-outline-light"
+              onclick="clearSearch('admin')"
+            >
               <i class="bi bi-x"></i>
             </button>
           </div>
@@ -515,6 +711,7 @@
               class="form-control"
               id="user-search"
               placeholder="Search posts by title, description, or category"
+              style="border-radius: 20px"
             />
             <button class="btn btn-outline-light" onclick="clearSearch('user')">
               <i class="bi bi-x"></i>
@@ -522,6 +719,70 @@
           </div>
         </div>
         <div id="user-posts" class="row"></div>
+      </div>
+
+      <!-- Chat Section -->
+      <div id="chat-section" class="container my-5 d-none">
+        <div class="chat-section">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <button class="btn btn-outline-light" onclick="showDashboard()">
+              <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </button>
+            <h2 class="text-white mb-0">Community Chat</h2>
+          </div>
+          <div id="chat-messages" class="mb-3">
+            <!-- Chat messages will be loaded here -->
+          </div>
+          <form id="chat-form" class="d-flex gap-2">
+            <div class="flex-grow-1">
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="chat-input"
+                  placeholder="Type your message..."
+                  required
+                />
+                <button class="btn btn-outline-light" type="button" onclick="addEmoji('😊')">
+                  <i class="bi bi-emoji-smile"></i>
+                </button>
+                <button class="btn btn-outline-light" type="button" onclick="addEmoji('👍')">
+                  <i class="bi bi-hand-thumbs-up"></i>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" id="chat-submit-btn">
+              <span
+                class="spinner-border spinner-border-sm d-none"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Send
+            </button>
+          </form>
+          <div class="mt-2 text-center">
+            <button
+              type="button"
+              class="btn btn-outline-light btn-sm"
+              onclick="addEmoji('😊')"
+            >
+              😊
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-light btn-sm"
+              onclick="addEmoji('👍')"
+            >
+              👍
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-light btn-sm"
+              onclick="addEmoji('🎉')"
+            >
+              🎉
+            </button>
+          </div>
       </div>
 
       <!-- Comment Modal -->
@@ -592,7 +853,9 @@
             <div class="modal-body">
               <form id="update-post-form">
                 <div class="mb-3">
-                  <label for="update-post-title" class="form-label">Title</label>
+                  <label for="update-post-title" class="form-label"
+                    >Title</label
+                  >
                   <input
                     type="text"
                     class="form-control"
@@ -602,7 +865,9 @@
                   />
                 </div>
                 <div class="mb-3">
-                  <label for="update-post-desc" class="form-label">Description</label>
+                  <label for="update-post-desc" class="form-label"
+                    >Description</label
+                  >
                   <textarea
                     class="form-control"
                     id="update-post-desc"
@@ -622,7 +887,9 @@
                   />
                 </div>
                 <div class="mb-3">
-                  <label for="update-post-image" class="form-label">Image URL</label>
+                  <label for="update-post-image" class="form-label"
+                    >Image URL</label
+                  >
                   <input
                     type="url"
                     class="form-control"
@@ -632,7 +899,9 @@
                   />
                 </div>
                 <div class="mb-3">
-                  <label for="update-post-category" class="form-label">Category</label>
+                  <label for="update-post-category" class="form-label"
+                    >Category</label
+                  >
                   <select
                     class="form-control"
                     id="update-post-category"
@@ -657,6 +926,61 @@
                   Save Changes
                 </button>
               </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Modal -->
+      <div
+        class="modal fade"
+        id="notificationModal"
+        tabindex="-1"
+        aria-labelledby="notificationModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="notificationModalLabel">
+                Notifications
+              </h5>
+              <button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div id="notification-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Modal -->
+      <div
+        class="modal fade"
+        id="detailModal"
+        tabindex="-1"
+        aria-labelledby="detailModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="detailModalLabel">Post Details</h5>
+              <button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <h4 id="detail-title"></h4>
+              <p id="detail-description"></p>
             </div>
           </div>
         </div>
@@ -699,7 +1023,6 @@
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JavaScript -->
     <script src="script.js"></script>
   </body>
 </html>

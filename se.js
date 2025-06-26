@@ -1,22 +1,7 @@
-
 const API_USERS = "https://6852ac200594059b23ce9d1f.mockapi.io/users";
 const API_POSTS = "https://6852ac200594059b23ce9d1f.mockapi.io/posts";
 const API_CHATS = "https://685578c26a6ef0ed663299f6.mockapi.io/chats/chatss";
 const WHATSAPP_LINK = "https://wa.me/+2348124080834";
-
-
-
-
-
-// Constants for error messages
-const ERROR_MESSAGES = {
-  INVALID_EMAIL: "Please enter a valid email address",
-  WEAK_PASSWORD: "Password must be at least 8 characters long",
-  PASSWORD_MISMATCH: "Passwords do not match",
-  REQUIRED_FIELD: "This field is required",
-  INVALID_CAPTCHA: "Invalid CAPTCHA answer",
-  SERVER_ERROR: "An unexpected error occurred. Please try again later."
-};
 
 let currentUser = null;
 let currentPostId = null;
@@ -39,16 +24,13 @@ function showToast(message) {
 
 // Toggle button loading state
 function toggleButtonLoading(button, isLoading) {
-  if (!button) return; // Return early if button is null
   const spinner = button.querySelector(".spinner-border");
-  if (spinner) { // Only proceed if spinner exists
-    if (isLoading) {
-      button.disabled = true;
-      spinner.classList.remove("d-none");
-    } else {
-      button.disabled = false;
-      spinner.classList.add("d-none");
-    }
+  if (isLoading) {
+    button.disabled = true;
+    spinner.classList.remove("d-none");
+  } else {
+    button.disabled = false;
+    spinner.classList.add("d-none");
   }
 }
 
@@ -76,71 +58,40 @@ function showAuth(mode) {
 // Handle signup form submission
 document.getElementById("signup-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const form = e.target;
-  const button = form.querySelector("button[type='submit']");
-  const name = form.querySelector("#signup-name").value.trim();
-  const email = form.querySelector("#signup-email").value.trim();
-  const password = form.querySelector("#signup-password").value;
-  const confirmPassword = form.querySelector("#signup-confirm-password").value;
-
-  // Form validation
-  if (!name) {
-    showToast(ERROR_MESSAGES.REQUIRED_FIELD);
-    return;
-  }
-
-  if (!email || !isValidEmail(email)) {
-    showToast(ERROR_MESSAGES.INVALID_EMAIL);
-    return;
-  }
-
-  if (password.length < 8) {
-    showToast(ERROR_MESSAGES.WEAK_PASSWORD);
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    showToast(ERROR_MESSAGES.PASSWORD_MISMATCH);
-    return;
-  }
-
+  const button = document.getElementById("signup-btn");
   toggleButtonLoading(button, true);
+  const name = document.getElementById("signup-name").value;
+  const email = document.getElementById("signup-email").value;
+  const password = document.getElementById("signup-password").value;
+  const confirmPassword = document.getElementById("signup-confirm-password").value;
 
   try {
-    const role = "user";
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      toggleButtonLoading(button, false);
+      return;
+    }
+    const role = email === "ridwansaliu84@gmail.com" ? "admin" : "user";
     const response = await fetch(API_USERS, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("authToken")
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, role, name }),
     });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "Signup failed");
+    if (response.ok) {
+      signupEmail = email;
+      document.getElementById("signup-form").reset();
+      document.getElementById("signup-section").classList.add("d-none");
+      document.getElementById("captcha-section").classList.remove("d-none");
+      generateCaptcha();
+    } else {
+      alert("Signup failed");
     }
-
-    const data = await response.json();
-    signupEmail = email;
-    form.reset();
-    document.getElementById("signup-section").classList.add("d-none");
-    document.getElementById("captcha-section").classList.remove("d-none");
-    generateCaptcha();
-    showToast("Signup successful! Please verify your email address.");
   } catch (error) {
-    console.error('Signup error:', error);
-    showToast(error.message || ERROR_MESSAGES.SERVER_ERROR);
+    alert(`An error occurred: ${error.message}. Please try again.`);
   } finally {
     toggleButtonLoading(button, false);
   }
 });
-
-function isValidEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
 
 // Handle login form submission
 document.getElementById("login-form").addEventListener("submit", async (e) => {
@@ -196,42 +147,24 @@ async function checkLoginStatus() {
   if (storedUser) {
     try {
       const user = JSON.parse(storedUser);
-      const response = await fetch(`${API_USERS}/${user.id}`);
-      if (!response.ok) throw new Error("Failed to fetch user data");
-      const validUser = await response.json();
-      if (validUser && validUser.email === user.email) {
+      const response = await fetch(API_USERS);
+      if (!response.ok) throw new Error("Failed to fetch users");
+      const users = await response.json();
+      const validUser = users.find((u) => u.email === user.email && u.password === user.password);
+      if (validUser) {
         currentUser = validUser;
         showDashboard();
         document.getElementById("user-avatar").src = `https://ui-avatars.com/api/?name=${encodeURIComponent(validUser.name)}&background=random`;
         document.getElementById("user-avatar").classList.remove("d-none");
       } else {
-        handleLogout();
+        localStorage.removeItem("currentUser");
+        document.getElementById("landing-page").classList.remove("d-none");
       }
     } catch (error) {
-      console.error('Login status check failed:', error);
-      handleLogout();
+      alert(`Failed to verify login status: ${error.message}. Please try again.`);
+      localStorage.removeItem("currentUser");
     }
-  } else {
-    showLandingPage();
   }
-}
-
-function handleLogout() {
-  localStorage.removeItem("currentUser");
-  currentUser = null;
-  showLandingPage();
-  showToast("You have been logged out");
-}
-
-function showLandingPage() {
-  document.getElementById("landing-page").classList.remove("d-none");
-  document.getElementById("navbar").classList.add("d-none");
-  document.getElementById("signup-section").classList.add("d-none");
-  document.getElementById("login-section").classList.add("d-none");
-  document.getElementById("captcha-section").classList.add("d-none");
-  document.getElementById("admin-dashboard").classList.add("d-none");
-  document.getElementById("user-dashboard").classList.add("d-none");
-  document.getElementById("chat-section").classList.add("d-none");
 }
 
 // Show appropriate dashboard
@@ -240,7 +173,6 @@ function showDashboard() {
   document.getElementById("login-section").classList.add("d-none");
   document.getElementById("captcha-section").classList.add("d-none");
   document.getElementById("chat-section").classList.add("d-none");
-  document.getElementById("landing-page").classList.add("d-none"); // Ensure hero section is hidden
   document.getElementById("navbar").classList.remove("d-none");
   if (currentUser.role === "admin") {
     document.getElementById("admin-dashboard").classList.remove("d-none");
@@ -258,7 +190,7 @@ function showChat() {
   document.getElementById("chat-section").classList.remove("d-none");
   loadChats();
   if (!chatInterval) {
-    chatInterval = setInterval(loadChats, 10000); // Poll every 20 seconds
+    chatInterval = setInterval(loadChats, 5000); // Poll every 5 seconds
   }
 }
 
@@ -485,7 +417,7 @@ async function likePost(postId, button) {
 }
 
 // Fetch user by email
-async function getUserByEmail(email) {  
+async function getUserByEmail(email) {
   try {
     const response = await fetch(API_USERS);
     if (!response.ok) throw new Error("Failed to fetch users");
@@ -663,13 +595,12 @@ async function loadChats() {
       chatContainer.innerHTML = '<p class="text-center">No messages yet.</p>';
     } else {
       for (const chat of chats) {
-        const user = await getUserByEmail(chat.userEmail);
         chatContainer.innerHTML += `
           <div class="chat-message">
             <div class="d-flex align-items-start">
-              <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random" class="avatar" alt="${user.name}">
+              <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(chat.userName)}&background=random" class="avatar" alt="${chat.userName}">
               <div>
-                <strong>${user.name}</strong>
+                <strong>${chat.userName}</strong>
                 <p class="mb-0"><small>${chat.message}</small></p>
                 <small class="text-muted">${new Date(chat.createdAt).toLocaleTimeString()}</small>
               </div>
@@ -687,7 +618,7 @@ async function loadChats() {
 // Handle chat submission
 document.getElementById("chat-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const button = document.getElementById("chat-submit-btn");
+  const button = e.target.querySelector("button");
   toggleButtonLoading(button, true);
   const message = document.getElementById("chat-input").value;
   try {
